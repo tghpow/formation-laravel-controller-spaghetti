@@ -2,34 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreInvoiceRequest;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreInvoiceRequest $request)
     {
         $this->authorize('create', Invoice::class);
         $user = $request->user();
+        $validated = $request->validated();
 
-        // Validation (arrays + items.*)
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:120'],
-            'client_name' => ['required', 'string', 'max:120'],
-            'client_email' => ['nullable', 'email', 'max:255'],
-            'tax_rate' => ['required', 'numeric', 'min:0', 'max:100'],
-
-            'items' => ['required', 'array', 'min:1', 'max:50'],
-            'items.*.label' => ['required', 'string', 'max:200'],
-            'items.*.qty' => ['required', 'integer', 'min:1', 'max:9999'],
-            'items.*.unit_price' => ['required', 'numeric', 'min:0', 'max:1000000'],
-        ]);
-
-        // 3) Création (transaction)
+        // Création (transaction)
         $invoice = DB::transaction(function () use ($validated, $user) {
             $subtotal = collect($validated['items'])
                 ->sum(fn ($it) => (int) $it['qty'] * (float) $it['unit_price']);
