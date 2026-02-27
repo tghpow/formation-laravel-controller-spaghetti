@@ -13,13 +13,10 @@ class InvoiceController extends Controller
 {
     public function store(Request $request)
     {
-        // 1) Auth via middleware ; is_admin (volontairement en dur — plus tard : policy)
+        $this->authorize('create', Invoice::class);
         $user = $request->user();
-        if (! $user->is_admin) {
-            abort(403, 'Forbidden.');
-        }
 
-        // 2) Validation (arrays + items.*)
+        // Validation (arrays + items.*)
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:120'],
             'client_name' => ['required', 'string', 'max:120'],
@@ -83,6 +80,8 @@ class InvoiceController extends Controller
 
     public function pdf(Invoice $invoice)
     {
+        $this->authorize('view', $invoice);
+
         $path = 'invoices/'.$invoice->id.'.pdf';
 
         if (Storage::disk('local')->exists($path)) {
