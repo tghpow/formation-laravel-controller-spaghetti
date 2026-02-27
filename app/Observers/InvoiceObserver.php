@@ -2,22 +2,19 @@
 
 namespace App\Observers;
 
+use App\Jobs\GenerateInvoicePdfJob;
 use App\Models\Invoice;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class InvoiceObserver
 {
     /**
-     * Génère et enregistre le PDF après création de la facture (après commit, pour avoir les lignes).
+     * Dispatch le job de génération PDF après commit (pour que les lignes existent).
      */
     public function created(Invoice $invoice): void
     {
         DB::afterCommit(function () use ($invoice) {
-            $invoice->load('items');
-            $pdf = Pdf::loadView('invoices.pdf', ['invoice' => $invoice]);
-            Storage::disk('local')->put('invoices/'.$invoice->id.'.pdf', $pdf->output());
+            GenerateInvoicePdfJob::dispatch($invoice->id);
         });
     }
 }
