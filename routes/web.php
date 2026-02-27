@@ -18,10 +18,8 @@ Route::get('/simulate-login', function () {
     return redirect('/');
 })->name('simulate-login');
 
-Route::post('/invoices', [InvoiceController::class, 'store']);
-
-Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('invoices.pdf');
-
+Route::post('/invoices', [InvoiceController::class, 'store'])->middleware('auth');
+Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf'])->middleware('auth')->name('invoices.pdf');
 Route::get('/invoices/{invoice}', function (Invoice $invoice) {
     return response()->json(
         $invoice->load('items'),

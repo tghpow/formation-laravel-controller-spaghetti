@@ -13,11 +13,8 @@ class InvoiceController extends Controller
 {
     public function store(Request $request)
     {
-        // 1) "Auth + admin" dans le controller (volontairement, pour la démo)
+        // 1) Auth via middleware ; is_admin (volontairement en dur — plus tard : policy)
         $user = $request->user();
-        if (! $user) {
-            abort(401, 'Unauthenticated.');
-        }
         if (! $user->is_admin) {
             abort(403, 'Forbidden.');
         }
