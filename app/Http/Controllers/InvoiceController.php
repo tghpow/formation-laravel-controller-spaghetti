@@ -53,12 +53,8 @@ class InvoiceController extends Controller
             return $invoice;
         });
 
-        // 4) Génération et enregistrement du PDF (spaghetti volontaire — plus tard : Observer)
-        $invoice->load('items');
-        $pdf = Pdf::loadView('invoices.pdf', ['invoice' => $invoice]);
-        Storage::disk('local')->put('invoices/'.$invoice->id.'.pdf', $pdf->output());
+        // PDF généré par InvoiceObserver::created (après commit)
 
-        // 5) Réponse JSON + lien PDF
         return response()->json([
             'id' => $invoice->id,
             'redirect_to' => route('invoices.show', $invoice),
