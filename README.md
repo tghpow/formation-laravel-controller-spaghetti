@@ -2,6 +2,18 @@
 
 Démo Laravel : création de factures (formulaire Vue.js), génération PDF (DomPDF), puis refactoring prévu (Observer, etc.).
 
+Suis moi sur linkedin: 
+www.linkedin.com/in/thibault-chazottes
+
+Abonnes toi à ma chaine Youtube: 
+https://www.youtube.com/@formateurwebThibaultChazottes
+
+J’y parle de Laravel, de Vue.js et des mes projets freelance.  
+
+Reçois ton code promo pour mon cours complet sur Laravel a 9.9$ seulement: https://tally.so/r/aQ6KXb  
+
+Voir mon cours Laravel sur Udemy: https://www.udemy.com/course/laravel-fr/
+
 ## Prérequis
 
 - PHP 8.2+
